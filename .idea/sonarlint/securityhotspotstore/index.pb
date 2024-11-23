@@ -5,3 +5,5 @@ T
 $contracts/social-media-platform.clar,1/c/1c94ec2f8cc76798d2e9121322900c7e4e508d93
 D
 contracts/utils.clar,2/0/206abaa2655bc06797ad37cd4e273ff046f8eb92
+S
+#tests/social-media-platform.test.ts,3/3/33fb1015089dd70a25e269e7434f75dfae98e52c
