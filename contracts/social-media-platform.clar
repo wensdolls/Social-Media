@@ -38,4 +38,60 @@
   (map-get? posts { post-id: post-id })
 )
 
+;; Public functions
+(define-public (create-user (username (string-ascii 20)) (display-name (string-utf8 50)) (bio (string-utf8 280)))
+  (let
+    (
+      (user tx-sender)
+    )
+    (asserts! (is-none (get-user username)) (err err-already-exists))
+    (ok (map-set users
+      { username: username }
+      {
+        address: user,
+        display-name: display-name,
+        bio: bio
+      }
+    ))
+  )
+)
+
+(define-public (create-post (content (string-utf8 1000)))
+  (let
+    (
+      (user tx-sender)
+      (post-id (var-get next-post-id))
+    )
+    (map-set posts
+      { post-id: post-id }
+      {
+        author: user,
+        content: content,
+        likes: u0
+      }
+    )
+    (var-set next-post-id (+ post-id u1))
+    (ok post-id)
+  )
+)
+
+(define-public (like-post (post-id uint))
+  (let
+    (
+      (post (unwrap! (get-post post-id) (err err-not-found)))
+    )
+    (ok (map-set posts
+      { post-id: post-id }
+      (merge post { likes: (+ (get likes post) u1) })
+    ))
+  )
+)
+
+;; Admin functions
+(define-public (update-contract-owner (new-owner principal))
+  (begin
+    (asserts! (is-eq tx-sender contract-owner) (err err-owner-only))
+    (ok true)
+  )
+)
 
